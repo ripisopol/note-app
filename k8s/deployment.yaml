@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: note-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: note-app
+  template:
+    metadata:
+      labels:
+        app: note-app
+    spec:
+      containers:
+        - name: note-app
+          image: ghcr.io/ripisopol/note-app:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: kanban-secret
+                  key: SECRET_KEY
