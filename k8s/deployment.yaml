@@ -25,10 +25,10 @@ spec:
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: kanban-secret
+                  name: notes-secret
                   key: SECRET_KEY
       volumes:
         - name: data
           hostPath:
-            path: /data/kanban
+            path: /data/notes
             type: DirectoryOrCreate            
