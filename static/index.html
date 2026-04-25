@@ -469,6 +469,65 @@
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #252525; border-radius: 2px; }
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .auth-box { padding: 24px 16px; }
+
+      .app-header { padding: 12px 16px; }
+      .app-header h1 { font-size: 16px; }
+      .user-info { gap: 8px; font-size: 11px; }
+
+      .app-body { position: relative; }
+
+      /* Sidebar takes full width on mobile */
+      .sidebar {
+        width: 100%;
+        position: absolute;
+        top: 0; left: 0;
+        height: 100%;
+        z-index: 10;
+        background: #0d0d0d;
+      }
+
+      /* Hide sidebar when note is open */
+      .sidebar.hidden { display: none; }
+
+      /* Editor takes full width */
+      .editor-pane {
+        width: 100%;
+      }
+
+      /* Hide editor when no note selected on mobile */
+      .editor-pane.hidden { display: none; }
+
+      /* Back button — only visible on mobile */
+      .mobile-back {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-family: monospace;
+        font-size: 11px;
+        padding: 4px 10px;
+        border: 1px solid #333;
+        border-radius: 3px;
+        background: transparent;
+        color: #888;
+        cursor: pointer;
+      }
+
+      .mobile-back:hover { color: #e8e8e8; border-color: #e8e8e8; }
+
+      .editor-toolbar { flex-wrap: wrap; gap: 6px; padding: 8px 12px; }
+      .editor-toolbar-left { width: 100%; }
+      .editor-toolbar-right { width: 100%; justify-content: space-between; }
+
+      textarea.md-input { padding: 12px 16px; font-size: 12px; }
+      .md-preview { padding: 12px 16px; }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-back { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -543,6 +602,7 @@
       <div id="editor-content" style="display:none; flex:1; flex-direction:column; overflow:hidden; display:none;">
         <div class="editor-toolbar">
           <div class="editor-toolbar-left">
+            <button class="mobile-back" onclick="showSidebar()">← notes</button>
             <input class="title-input" type="text" id="note-title" placeholder="untitled"
               oninput="scheduleSave()" />
           </div>
@@ -610,6 +670,9 @@
     document.getElementById('app-page').style.display = 'flex'
     document.getElementById('username-display').textContent = currentUsername || ''
     loadTags().then(loadNotes)
+    if (window.innerWidth <= 768) {
+      document.querySelector('.editor-pane').classList.add('hidden')
+    }
   }
 
   function toggleAuthMode() {
@@ -789,6 +852,7 @@
     activeNoteId = id
     const note = notes.find(n => n.id === id)
     if (!note) return
+    if (window.innerWidth <= 768) showEditor()
 
     document.getElementById('no-note').style.display = 'none'
     const content = document.getElementById('editor-content')
@@ -805,6 +869,16 @@
     updatePreview()
     setView(currentView)
     renderNoteList()
+  }
+
+  function showSidebar() {
+    document.querySelector('.sidebar').classList.remove('hidden')
+    document.querySelector('.editor-pane').classList.add('hidden')
+  }
+
+  function showEditor() {
+    document.querySelector('.sidebar').classList.add('hidden')
+    document.querySelector('.editor-pane').classList.remove('hidden')
   }
 
   function renderEditorTags(noteTags) {

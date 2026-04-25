@@ -27,6 +27,8 @@ spec:
                 secretKeyRef:
                   name: notes-secret
                   key: SECRET_KEY
+            - name: DB_PATH
+              value: "/app/data/notes.db"
       volumes:
         - name: data
           hostPath:
